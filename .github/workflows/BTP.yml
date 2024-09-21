@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop  # S'exécute à chaque push sur la branche develop
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build and Tag Client Docker Image
+      run: |
+        docker build -t youssefemzj/mern_projet_ocw_client:${{ github.sha }} ./client
+        docker tag youssefemzj/mern_projet_ocw_client:${{ github.sha }} youssefemzj/mern_projet_ocw_client:latest
+
+    - name: Build and Tag Server Docker Image
+      run: |
+        docker build -t youssefemzj/mern_projet_ocw_server:${{ github.sha }} ./server
+        docker tag youssefemzj/mern_projet_ocw_server:${{ github.sha }} youssefemzj/mern_projet_ocw_server:latest
+
+    - name: Push Client Docker Image to DockerHub
+      run: |
+        docker push youssefemzj/mern_projet_ocw_client:${{ github.sha }}
+        docker push youssefemzj/mern_projet_ocw_client:latest
+
+    - name: Push Server Docker Image to DockerHub
+      run: |
+        docker push youssefemzj/mern_projet_ocw_server:${{ github.sha }}
+        docker push youssefemzj/mern_projet_ocw_server:latest
