@@ -82,3 +82,15 @@ jobs:
       run: |
         docker push youssefemzj/mern_projet_ocw_server:${{ env.IMAGE_TAG }}
         docker push youssefemzj/mern_projet_ocw_server:latest
+
+ trigger-deploy:
+    needs: build  # Assurez-vous que le job build est terminé
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger deploy workflow
+      run: |
+        curl -X POST \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+        https://api.github.com/repos/YoussefEMZJ/mern_projet_ocw/actions/workflows/deploy.yml/dispatches \
+        -d '{"ref":"develop"}'
