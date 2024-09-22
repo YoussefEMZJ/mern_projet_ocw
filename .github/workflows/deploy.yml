@@ -41,7 +41,7 @@ jobs:
       with:
         host: ${{ secrets.VPS_IP }}
         username: ${{ secrets.VPS_USER }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT }}  # Utilisation du secret pour le port
         script: |
           cd /home/devopsuser/mern_projet_ocw
