@@ -1,12 +1,7 @@
 name: Deploy on Pre-Prod Server
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Docker Images"]  # Nom du workflow précédent
-    types:
-      - completed  # Se déclenche à la fin du workflow précédent
-    status: 
-      - success  # Déclenche uniquement si le pipeline précédent a réussi
+  workflow_dispatch:  # Permet de déclencher manuellement le workflow
   
 jobs:
   deploy:
