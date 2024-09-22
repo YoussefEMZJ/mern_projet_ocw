@@ -83,7 +83,7 @@ jobs:
         docker push youssefemzj/mern_projet_ocw_server:${{ env.IMAGE_TAG }}
         docker push youssefemzj/mern_projet_ocw_server:latest
 
- trigger-deploy:
+  trigger-deploy:
     needs: build  # Assurez-vous que le job build est terminé
     runs-on: ubuntu-latest
     steps:
