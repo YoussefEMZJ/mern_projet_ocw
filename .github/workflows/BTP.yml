@@ -67,4 +67,4 @@ jobs:
         git pull origin Feature/BTP  # S'assurer d'être à jour avant le commit
         git add version.txt
         git commit -m "Incremented to version ${{ env.IMAGE_TAG }}"
-        git push https://x-access-token:${GH_PAT}@github.com/YoussefEMZJ/mern_projet_ocw.git HEAD:feature/BTP
+        git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/YoussefEMZJ/mern_projet_ocw.git HEAD:Feature/BTP
