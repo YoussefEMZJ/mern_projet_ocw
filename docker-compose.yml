@@ -5,7 +5,8 @@ services:
   client:
     image: youssefemzj/mern_projet_ocw_client:${VERSION}  # Utiliser l'image du client depuis DockerHub
     container_name: client
-    - ./client/.env  # Chemin vers le fichier .env sur le VPS
+    env_file:
+      - ./client/.env  # Chemin vers le fichier .env sur le VPS
     ports:
       - '8080:8080'
     networks:
