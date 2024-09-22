@@ -1,7 +1,9 @@
 name: Deploy on Pre-Prod Server
 
 on:
-  workflow_dispatch:  # Déclenchement manuel via GitHub
+  push:
+    branches:
+      - develop
   
 jobs:
   deploy:
