@@ -41,7 +41,6 @@ jobs:
       with:
         host: ${{ secrets.VPS_IP }}
         username: ${{ secrets.VPS_USER }}
-        key: ${{ secrets.VPS_SSH_KEY }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         port: ${{ secrets.VPS_PORT }}  # Utilisation du secret pour le port
         script: |
