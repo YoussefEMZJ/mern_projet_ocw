@@ -64,6 +64,7 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
+        git pull origin feature/BTP  # S'assurer d'être à jour avant le commit
         git add version.txt
         git commit -m "Incremented to version ${{ env.IMAGE_TAG }}"
-        git push origin develop
+        git push origin feature/BTP
