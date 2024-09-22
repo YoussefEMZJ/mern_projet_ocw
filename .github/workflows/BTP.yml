@@ -62,7 +62,7 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        git pull origin feature/BTP
+        git pull origin Feature/BTP
         git add version.txt
         git commit -m "Incremented to version ${{ env.NEW_VERSION }}"
-        git push origin feature/BTP
+        git push origin Feature/BTP
