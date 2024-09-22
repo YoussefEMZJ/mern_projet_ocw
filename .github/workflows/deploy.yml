@@ -33,7 +33,7 @@ jobs:
         username: ${{ secrets.VPS_USER }}
         key: ${{ secrets.VPS_SSH_KEY }}
         source: 'docker-compose.yml'
-        target: '/home/devopsuser/mern_projet_ocw/docker-compose.yml'
+        target: '/home/devopsuser/mern_projet_ocw/'
         port: ${{ secrets.VPS_PORT }}  # Utilisation du secret pour le port
 
     - name: Run Docker Compose on VPS
