@@ -1,9 +1,9 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline - Build, Tag, Push
 
 on:
   push:
     branches:
-      - develop  # S'exécute à chaque push sur la branche develop
+      - develop  # S'exécute à chaque push sur develop
 
 jobs:
   build_and_push:
@@ -16,25 +16,54 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
+    - name: Read current version and increment PATCH
+      id: version
+      run: |
+        # Lire la version actuelle à partir du fichier version.txt
+        VERSION=$(cat version.txt)
+
+        # Séparer MAJOR, MINOR, PATCH
+        MAJOR=$(echo "$VERSION" | cut -d '.' -f 1)
+        MINOR=$(echo "$VERSION" | cut -d '.' -f 2)
+        PATCH=$(echo "$VERSION" | cut -d '.' -f 3)
+
+        # Incrémenter le PATCH
+        NEW_PATCH=$((PATCH + 1))
+        NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
+
+        # Stocker la nouvelle version dans le fichier version.txt
+        echo "$NEW_VERSION" > version.txt
+
+        # Exporter la nouvelle version comme variable d'environnement
+        echo "IMAGE_TAG=$NEW_VERSION" >> $GITHUB_ENV
+
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Build and Tag Client Docker Image
       run: |
-        docker build -t youssefemzj/mern_projet_ocw_client:${{ github.sha }} ./client
-        docker tag youssefemzj/mern_projet_ocw_client:${{ github.sha }} youssefemzj/mern_projet_ocw_client:latest
+        docker build -t youssefemzj/mern_projet_ocw_client:${{ env.IMAGE_TAG }} ./client
+        docker tag youssefemzj/mern_projet_ocw_client:${{ env.IMAGE_TAG }} youssefemzj/mern_projet_ocw_client:latest
 
     - name: Build and Tag Server Docker Image
       run: |
-        docker build -t youssefemzj/mern_projet_ocw_server:${{ github.sha }} ./server
-        docker tag youssefemzj/mern_projet_ocw_server:${{ github.sha }} youssefemzj/mern_projet_ocw_server:latest
+        docker build -t youssefemzj/mern_projet_ocw_server:${{ env.IMAGE_TAG }} ./server
+        docker tag youssefemzj/mern_projet_ocw_server:${{ env.IMAGE_TAG }} youssefemzj/mern_projet_ocw_server:latest
 
     - name: Push Client Docker Image to DockerHub
       run: |
-        docker push youssefemzj/mern_projet_ocw_client:${{ github.sha }}
+        docker push youssefemzj/mern_projet_ocw_client:${{ env.IMAGE_TAG }}
         docker push youssefemzj/mern_projet_ocw_client:latest
 
     - name: Push Server Docker Image to DockerHub
       run: |
-        docker push youssefemzj/mern_projet_ocw_server:${{ github.sha }}
+        docker push youssefemzj/mern_projet_ocw_server:${{ env.IMAGE_TAG }}
         docker push youssefemzj/mern_projet_ocw_server:latest
+
+    - name: Commit new version to repository
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add version.txt
+        git commit -m "Incremented to version ${{ env.IMAGE_TAG }}"
+        git push origin develop
