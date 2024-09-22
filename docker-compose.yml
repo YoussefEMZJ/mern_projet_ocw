@@ -1,39 +1,44 @@
-version: '3'
+
 
 services:
+  # Client (frontend)
   client:
-    build: client
+    image: youssefemzj/mern_projet_ocw_client:${VERSION}  # Utiliser l'image du client depuis DockerHub
     container_name: client
     ports:
       - '8080:8080'
     networks:
       - app-network
 
+  # Server (backend)
   server:
-    build: server
+    image: youssefemzj/mern_projet_ocw_server:${VERSION}  # Utiliser l'image du serveur depuis DockerHub
     container_name: server
     environment:
       - PORT=3000
       - BASE_API_URL=api
       - CLIENT_URL=http://localhost:8080
-      - JWT_SECRET=update_your_JWT_secret
-      - MONGO_URI=mongodb://mongo:27017/mern_ecommerce # Default Mongo URL & DB name when running project locally
+      - JWT_SECRET=$JWT_SECRET
+      - MONGO_URI=mongodb://mongo:27017/mern_ecommerce
     ports:
       - '3000:3000'
     command: [
-        'sh',
-        '-c',
-        'npm run seed:db admin@example.com admin123 && npm start'
-      ] # Default email and password arguments to database seed script - update your admin email and password
+      'sh',
+      '-c',
+      'npm run seed:db admin@example.com admin123 && npm start'
+    ]
     depends_on:
       - mongo
     networks:
       - app-network
 
+  # MongoDB (base de données)
   mongo:
     image: mongo:latest
     container_name: mongodb
     command: mongod --quiet --logpath /dev/null
+    volumes:
+      - mongo-data:/data/db  # Volume pour persister les données de MongoDB
     ports:
       - '27017:27017'
     networks:
@@ -42,3 +47,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  mongo-data:  # Volume persistant pour MongoDB
