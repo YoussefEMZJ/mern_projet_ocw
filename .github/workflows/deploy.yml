@@ -1,11 +1,8 @@
 name: Deploy on Pre-Prod Server
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Docker Images"]
-    types:
-      - completed
-
+  workflow_dispatch:  # Déclenchement manuel via GitHub
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
